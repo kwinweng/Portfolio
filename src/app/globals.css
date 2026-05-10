@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors — Dimension Design System */
+  --color-midnight-base: #0a0a0a;
+  --color-storm-gray: #161616;
+  --color-gunmetal: #282828;
+  --color-slate-text: #686868;
+  --color-ash-text: #b2b2b2;
+  --color-silver-whisper: #c2c2c2;
+  --color-ghost-white: #e5e5e5;
+  --color-canvas-white: #ffffff;
+  --color-gradient-aura: #4867af;
+  --color-interactive-glow: #6b62f2;
+
+  /* Typography */
+  --font-heading: var(--font-geist-sans);
+  --font-body: var(--font-dm-sans), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Spacing */
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-28: 28px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-44: 44px;
+  --spacing-48: 48px;
+  --spacing-56: 56px;
+  --spacing-64: 64px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  /* Surfaces */
+  --surface-base: #0a0a0a;
+  --surface-translucent: rgba(0, 0, 0, 0.2);
+  --surface-overlay: rgba(212, 212, 212, 0.1);
+
+  /* Elevation */
+  --elevation-card: drop-shadow(rgba(255, 255, 255, 0.02) 0px 3px 4.5px)
+    drop-shadow(rgba(0, 0, 0, 0.04) 0px 10px 8px)
+    drop-shadow(rgba(0, 0, 0, 0.1) 0px 4px 3px);
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--surface-base);
+  color: var(--color-ghost-white);
+  font-family: var(--font-body);
+}
+
+/* Gradient Aura — Hero only */
+.gradient-aura {
+  background: linear-gradient(
+    180deg,
+    rgb(72, 103, 175) 0%,
+    rgb(156, 175, 184) 40%,
+    rgb(196, 149, 119) 70%,
+    transparent 100%
+  );
+  opacity: 0.08;
+}
+
+/* Translucent card with blur */
+.card-translucent {
+  background: var(--surface-translucent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 24px;
+}
+
+.card-ghost {
+  background: var(--surface-overlay);
+  border-radius: 24px;
 }
