@@ -13,8 +13,6 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export const dynamicParams = false;
-
 export function generateStaticParams() {
   return listWritings("writing", { includeUnlisted: true }).map((item) => ({
     slug: item.slug,

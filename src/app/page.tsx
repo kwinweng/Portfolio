@@ -1,8 +1,14 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { listProjects } from "@/lib/repo/projects";
+import { listWritings } from "@/lib/repo/writings";
+import { listReading } from "@/lib/repo/reading";
+import { listLab } from "@/lib/repo/lab";
+import { countProjects } from "@/lib/repo/projects";
+import { countWritings } from "@/lib/repo/writings";
+import { countReading } from "@/lib/repo/reading";
+import { countLab } from "@/lib/repo/lab";
+import { EmailButton } from "@/components/email-button";
 
 const navItems = [
   { id: "about", num: "00", label: "ABOUT", zh: "关于" },
@@ -11,45 +17,6 @@ const navItems = [
   { id: "reading", num: "03", label: "READING", zh: "阅读" },
   { id: "lab", num: "04", label: "LAB", zh: "实验室" },
   { id: "elsewhere", num: "05", label: "ELSEWHERE", zh: "其他" },
-];
-
-const projects = [
-  {
-    name: "AI News Radar",
-    desc: "Daily board for AI product and growth signals.",
-    tag: "Radar",
-    href: "/projects/news-radar",
-  },
-  {
-    name: "Financial Expert",
-    desc: "Personal finance diagnosis with clearer monthly views.",
-    tag: "Finance",
-    href: "/projects/financial-expert",
-  },
-  {
-    name: "LLM Knowledge Vault",
-    desc: "Obsidian ingest, taxonomy, and durable notes.",
-    tag: "Knowledge",
-    href: "/projects/llm-knowledge-base",
-  },
-];
-
-const writings = [
-  { type: "ESSAY", title: "Small systems beat heroic discipline" },
-  { type: "NOTE", title: "How AI tools should respect your process" },
-  { type: "LOG", title: "Week 19: Build Log — homepage redesign" },
-];
-
-const readings = [
-  { type: "AI", title: "Agents as personal infrastructure" },
-  { type: "DESIGN", title: "Brutalist web design and its return" },
-  { type: "WORK", title: "The case for working with the garage door up" },
-];
-
-const labItems = [
-  { title: "Article → Mindmap" },
-  { title: "Reading Inbox → Note" },
-  { title: "Weekly Review Template" },
 ];
 
 function Sidebar() {
@@ -75,9 +42,7 @@ function Sidebar() {
               href={`#${item.id}`}
               className="flex items-center gap-3 py-2 text-sm hover:text-accent transition-colors group"
             >
-              <span className="text-accent text-xs font-mono">
-                {item.num}
-              </span>
+              <span className="text-accent text-xs font-mono">{item.num}</span>
               <span className="font-mono text-xs tracking-wider">
                 {item.label}
               </span>
@@ -103,53 +68,53 @@ function Sidebar() {
   );
 }
 
-function EmailButton() {
-  const [copied, setCopied] = useState(false);
-  const email = "hello@kwinweng.com";
-
-  return (
-    <a
-      href={`mailto:${email}`}
-      onClick={async (e) => {
-        e.preventDefault();
-        setCopied(true);
-        try {
-          await navigator.clipboard.writeText(email);
-        } catch {
-          window.location.href = `mailto:${email}`;
-        }
-        setTimeout(() => setCopied(false), 1500);
-      }}
-      className={`text-xs font-mono transition-colors cursor-pointer inline-block ${
-        copied ? "text-accent font-bold" : "text-text-secondary hover:text-accent"
-      }`}
-    >
-      {copied ? "✓ COPIED!" : "EMAIL →"}
-    </a>
-  );
-}
-
 export default function Home() {
+  // Featured first, then most recently updated
+  const allProjects = listProjects();
+  const featuredProjects = allProjects.filter((p) => p.featured);
+  const otherProjects = allProjects
+    .filter((p) => !p.featured)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const spotlight = [...featuredProjects, ...otherProjects].slice(0, 3);
+
+  const recentWritings = [
+    ...listWritings("writing"),
+    ...listWritings("log"),
+  ]
+    .sort((a, b) => {
+      const aDate = a.publishedAt ?? a.updatedAt;
+      const bDate = b.publishedAt ?? b.updatedAt;
+      return bDate.localeCompare(aDate);
+    })
+    .slice(0, 3);
+
+  const recentReading = listReading().slice(0, 3);
+  const recentLab = listLab().slice(0, 3);
+
+  const counts = {
+    projects: countProjects(),
+    writing: countWritings().writing + countWritings().log,
+    reading: countReading(),
+    lab: countLab(),
+  };
+  const activeBuilds = allProjects.filter((p) => p.status === "building").length;
+
   return (
     <div className="max-w-[1280px] mx-auto my-3 sm:my-6 panel-thick">
       <div className="flex">
         <Sidebar />
 
-        {/* Main content */}
         <main className="flex-1 min-w-0">
           {/* Hero / About */}
           <section id="about" className="p-6 sm:p-10">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-              {/* Left: text */}
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-8">
                   <p className="text-xs text-text-secondary font-mono tracking-wider">
                     <span className="inline-block w-2 h-2 bg-accent mr-2 align-middle" />
                     PERSONAL SITE / DIGITAL GARDEN / LAB
                   </p>
-                  <span className="text-accent text-sm font-mono">
-                    2026
-                  </span>
+                  <span className="text-accent text-sm font-mono">2026</span>
                 </div>
 
                 <h1 className="mono-heading text-5xl sm:text-7xl lg:text-8xl leading-[0.92] text-border font-mono">
@@ -166,7 +131,6 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Right: avatar card */}
               <div className="lg:w-72 shrink-0">
                 <div className="panel-thick p-0 overflow-hidden">
                   <div className="bg-panel p-4">
@@ -200,9 +164,9 @@ export default function Home() {
           <section className="border-t border-border-light">
             <div className="grid grid-cols-1 sm:grid-cols-4">
               {[
-                { num: "06", label: "MODULES" },
-                { num: "03", label: "ACTIVE BUILDS" },
-                { num: "24+", label: "NOTES QUEUED" },
+                { num: String(counts.projects).padStart(2, "0"), label: "PROJECTS" },
+                { num: String(activeBuilds).padStart(2, "0"), label: "ACTIVE BUILDS" },
+                { num: String(counts.writing + counts.reading).padStart(2, "0"), label: "NOTES" },
                 { num: "01", label: "PUBLIC HOME" },
               ].map((m, i) => (
                 <div
@@ -225,12 +189,8 @@ export default function Home() {
           </section>
 
           {/* Projects + Status */}
-          <section
-            id="projects"
-            className="border-t border-border-light"
-          >
+          <section id="projects" className="border-t border-border-light">
             <div className="flex flex-col lg:flex-row">
-              {/* Projects */}
               <div className="flex-1 p-6 sm:p-8 lg:border-r border-border-light">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="font-mono text-lg font-bold">
@@ -249,31 +209,57 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-0">
-                  {projects.map((p, i) => (
-                    <Link key={p.name} href={p.href} className="group block">
-                      <div
-                        className={`flex items-start gap-4 py-4 ${
-                          i > 0 ? "border-t border-border-light" : ""
-                        } hover:bg-bg/50 transition-colors -mx-2 px-2`}
-                      >
-                        <div className="flex-1 min-w-0">
-                          <p className="font-mono text-sm font-bold">
-                            {p.name}
-                          </p>
-                          <p className="text-sm text-text-secondary mt-0.5">
-                            {p.desc}
-                          </p>
-                        </div>
-                        <span className="text-xs text-accent font-mono shrink-0 mt-0.5">
-                          {p.tag}
+                  {spotlight.length === 0 && (
+                    <p className="text-sm text-text-secondary py-4">
+                      No projects yet.
+                    </p>
+                  )}
+                  {spotlight.map((p, i) => (
+                    <div
+                      key={p.slug}
+                      className={`flex items-start gap-4 py-4 ${
+                        i > 0 ? "border-t border-border-light" : ""
+                      } -mx-2 px-2`}
+                    >
+                      <div className="flex-1 min-w-0">
+                        {p.links.demo ? (
+                          <a
+                            href={p.links.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-sm font-bold hover:text-accent transition-colors"
+                          >
+                            {p.title}
+                            <span className="text-accent ml-1">↗</span>
+                          </a>
+                        ) : (
+                          <Link
+                            href={`/projects/${p.slug}`}
+                            className="font-mono text-sm font-bold hover:text-accent transition-colors"
+                          >
+                            {p.title}
+                          </Link>
+                        )}
+                        <p className="text-sm text-text-secondary mt-0.5">
+                          {p.subtitle}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0 mt-0.5">
+                        <Link
+                          href={`/projects/${p.slug}`}
+                          className="text-[11px] font-mono text-text-muted hover:text-accent transition-colors"
+                        >
+                          Details →
+                        </Link>
+                        <span className="text-xs text-accent font-mono">
+                          {p.categories[0] ?? p.status}
                         </span>
                       </div>
-                    </Link>
+                    </div>
                   ))}
                 </div>
               </div>
 
-              {/* Status */}
               <div className="lg:w-80 p-6 sm:p-8 border-t lg:border-t-0 border-border-light">
                 <h2 className="font-mono text-lg font-bold mb-4">
                   <span className="text-xs text-text-muted mr-2">NOW</span>
@@ -292,7 +278,6 @@ export default function Home() {
           {/* Writing / Reading / Lab */}
           <section className="border-t border-border-light">
             <div className="grid grid-cols-1 sm:grid-cols-3">
-              {/* Writing */}
               <div
                 id="writing"
                 className="p-6 sm:p-8 sm:border-r border-border-light border-b sm:border-b-0"
@@ -305,18 +290,26 @@ export default function Home() {
                   </span>
                 </h2>
                 <div className="space-y-4">
-                  {writings.map((w) => (
-                    <div key={w.title}>
+                  {recentWritings.length === 0 && (
+                    <p className="text-sm text-text-secondary">No writing yet.</p>
+                  )}
+                  {recentWritings.map((w) => (
+                    <Link
+                      key={`${w.type}/${w.slug}`}
+                      href={`/${w.type}/${w.slug}`}
+                      className="block group"
+                    >
                       <span className="text-[10px] text-accent font-mono tracking-wider">
-                        {w.type}
+                        {(w.tags[0] ?? w.type).toUpperCase()}
                       </span>
-                      <p className="text-sm mt-0.5">{w.title}</p>
-                    </div>
+                      <p className="text-sm mt-0.5 group-hover:text-accent transition-colors">
+                        {w.title}
+                      </p>
+                    </Link>
                   ))}
                 </div>
               </div>
 
-              {/* Reading */}
               <div
                 id="reading"
                 className="p-6 sm:p-8 sm:border-r border-border-light border-b sm:border-b-0"
@@ -329,18 +322,35 @@ export default function Home() {
                   </span>
                 </h2>
                 <div className="space-y-4">
-                  {readings.map((r) => (
-                    <div key={r.title}>
-                      <span className="text-[10px] text-accent font-mono tracking-wider">
-                        {r.type}
-                      </span>
-                      <p className="text-sm mt-0.5">{r.title}</p>
-                    </div>
-                  ))}
+                  {recentReading.length === 0 && (
+                    <p className="text-sm text-text-secondary">No reading yet.</p>
+                  )}
+                  {recentReading.map((r) => {
+                    const inner = (
+                      <>
+                        <span className="text-[10px] text-accent font-mono tracking-wider">
+                          {r.topic.toUpperCase()}
+                        </span>
+                        <p className="text-sm mt-0.5">{r.title}</p>
+                      </>
+                    );
+                    return r.url ? (
+                      <a
+                        key={r.id}
+                        href={r.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block hover:text-accent transition-colors"
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <div key={r.id}>{inner}</div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Lab */}
               <div id="lab" className="p-6 sm:p-8">
                 <h2 className="font-mono text-lg font-bold mb-5">
                   <span className="text-xs text-text-muted mr-2">04</span>
@@ -350,13 +360,29 @@ export default function Home() {
                   </span>
                 </h2>
                 <div className="space-y-3">
-                  {labItems.map((l) => (
-                    <div key={l.title} className="panel p-3">
-                      <p className="text-sm font-mono">
-                        {l.title}
-                      </p>
-                    </div>
-                  ))}
+                  {recentLab.length === 0 && (
+                    <p className="text-sm text-text-secondary">No lab items.</p>
+                  )}
+                  {recentLab.map((l) => {
+                    const inner = (
+                      <p className="text-sm font-mono">{l.title}</p>
+                    );
+                    return l.href ? (
+                      <a
+                        key={l.slug}
+                        href={l.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="panel p-3 block hover:border-accent transition-colors"
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <div key={l.slug} className="panel p-3">
+                        {inner}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -420,7 +446,9 @@ export default function Home() {
                 >
                   <span className="text-accent">{item.num}</span>
                   <span>{item.label}</span>
-                  <span className="text-[10px] text-text-muted">/ {item.zh}</span>
+                  <span className="text-[10px] text-text-muted">
+                    / {item.zh}
+                  </span>
                 </a>
               ))}
             </div>

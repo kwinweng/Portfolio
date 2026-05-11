@@ -25,8 +25,6 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export const dynamicParams = false;
-
 export function generateStaticParams() {
   return listProjects({ includeUnlisted: true }).map((p) => ({ slug: p.slug }));
 }

@@ -50,29 +50,44 @@ export default function ProjectsPage() {
                 </h2>
                 <div className="space-y-0">
                   {groupProjects.map((project, i) => (
-                    <Link
+                    <div
                       key={project.slug}
-                      href={`/projects/${project.slug}`}
-                      className="group block"
+                      className={`flex items-start justify-between gap-4 py-4 -mx-2 px-2 ${
+                        i > 0 ? "border-t border-border-light" : ""
+                      }`}
                     >
-                      <div
-                        className={`flex items-start justify-between py-4 hover:bg-bg/50 -mx-2 px-2 transition-colors ${
-                          i > 0 ? "border-t border-border-light" : ""
-                        }`}
-                      >
-                        <div>
-                          <p className="font-mono text-sm font-bold group-hover:text-accent transition-colors">
+                      <div className="flex-1 min-w-0">
+                        {project.links.demo ? (
+                          <a
+                            href={project.links.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-sm font-bold hover:text-accent transition-colors"
+                          >
                             {project.title}
-                          </p>
-                          <p className="text-sm text-text-secondary mt-0.5">
-                            {project.subtitle}
-                          </p>
-                        </div>
-                        <span className="text-xs text-accent font-mono shrink-0">
+                            <span className="text-accent ml-1">↗</span>
+                          </a>
+                        ) : (
+                          <span className="font-mono text-sm font-bold">
+                            {project.title}
+                          </span>
+                        )}
+                        <p className="text-sm text-text-secondary mt-0.5">
+                          {project.subtitle}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0">
+                        <Link
+                          href={`/projects/${project.slug}`}
+                          className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
+                        >
+                          Details →
+                        </Link>
+                        <span className="text-xs text-accent font-mono">
                           {project.status === "deployed" ? "Live" : project.status}
                         </span>
                       </div>
-                    </Link>
+                    </div>
                   ))}
                 </div>
               </div>
