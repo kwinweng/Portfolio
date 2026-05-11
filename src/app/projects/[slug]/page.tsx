@@ -1,20 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProjectBySlug, getProjectSlugs } from "@/lib/data";
-import { STATUS_LABELS, CATEGORY_LABELS } from "@/types/project";
+import { listProjects, getProject } from "@/lib/repo/projects";
+
+const STATUS_LABELS: Record<string, string> = {
+  deployed: "Deployed",
+  building: "Building",
+  maintained: "Maintained",
+  concept: "Concept",
+  archived: "Archived",
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  investing: "Investing",
+  finance: "Personal Finance",
+  knowledge: "Knowledge",
+  intelligence: "Intelligence",
+  agent: "Agent Workflow",
+  design: "Design",
+  planning: "Planning",
+};
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateStaticParams() {
-  return getProjectSlugs().map((slug) => ({ slug }));
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return listProjects({ includeUnlisted: true }).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = getProject(slug, { includeUnlisted: true });
   if (!project) return { title: "Not Found" };
   return {
     title: project.title,
@@ -24,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = getProject(slug, { includeUnlisted: true });
   if (!project) notFound();
 
   return (
@@ -43,10 +62,10 @@ export default async function ProjectPage({ params }: Props) {
               {project.priority}
             </span>
             <span className="text-xs font-mono text-text-muted">
-              {STATUS_LABELS[project.status]}
+              {STATUS_LABELS[project.status] ?? project.status}
             </span>
           </div>
-          <h1 className="mono-heading text-3xl sm:text-4xl font-mono">
+          <h1 className="mono-heading text-3xl sm:text-4xl font-mono text-border">
             {project.title}
           </h1>
           <p className="text-text-secondary mt-2">{project.subtitle}</p>
@@ -89,7 +108,7 @@ export default async function ProjectPage({ params }: Props) {
             <div className="flex flex-wrap gap-2">
               {project.categories.map((cat) => (
                 <span key={cat} className="text-sm">
-                  {CATEGORY_LABELS[cat]}
+                  {CATEGORY_LABELS[cat] ?? cat}
                 </span>
               ))}
             </div>
@@ -111,7 +130,7 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </div>
 
-        {project.metrics && project.metrics.length > 0 && (
+        {project.metrics.length > 0 && (
           <div className="panel p-4 mb-8">
             <p className="text-[10px] font-mono text-text-muted tracking-wider uppercase mb-3">
               Metrics
@@ -119,15 +138,13 @@ export default async function ProjectPage({ params }: Props) {
             {project.metrics.map((m) => (
               <div key={m.label} className="flex justify-between py-1">
                 <span className="text-sm text-text-secondary">{m.label}</span>
-                <span className="text-sm font-mono font-bold">
-                  {m.value}
-                </span>
+                <span className="text-sm font-mono font-bold">{m.value}</span>
               </div>
             ))}
           </div>
         )}
 
-        {project.roadmap && project.roadmap.length > 0 && (
+        {project.roadmap.length > 0 && (
           <div>
             <p className="text-[10px] font-mono text-text-muted tracking-wider uppercase mb-3">
               Roadmap
@@ -140,7 +157,9 @@ export default async function ProjectPage({ params }: Props) {
                       i === 0 ? "bg-accent" : "bg-border-light"
                     }`}
                   />
-                  <p className={`text-sm ${i === 0 ? "text-text" : "text-text-secondary"}`}>
+                  <p
+                    className={`text-sm ${i === 0 ? "text-text" : "text-text-secondary"}`}
+                  >
                     {item}
                   </p>
                 </div>

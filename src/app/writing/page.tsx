@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { listContent } from "@/lib/content";
+import { listWritings } from "@/lib/repo/writings";
+import { estimateReadingMinutes } from "@/lib/reading-time";
 
 export const metadata: Metadata = {
   title: "Writing / 文章",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function WritingPage() {
-  const articles = listContent("writing");
+  const articles = listWritings("writing");
 
   return (
     <div className="max-w-3xl mx-auto my-4 sm:my-8 panel-thick">
@@ -26,37 +27,40 @@ export default function WritingPage() {
 
         {articles.length > 0 ? (
           <div className="space-y-0">
-            {articles.map((item, i) => (
-              <Link
-                key={item.slug}
-                href={`/writing/${item.slug}`}
-                className={`block group py-5 ${
-                  i > 0 ? "border-t border-border-light" : ""
-                } hover:bg-bg/50 transition-colors -mx-2 px-2`}
-              >
-                <div className="flex items-center gap-3 mb-1 flex-wrap">
-                  <span className="text-[10px] text-accent font-mono tracking-wider">
-                    {(item.tags[0] || "note").toUpperCase()}
-                  </span>
-                  {item.publishedAt && (
-                    <span className="text-xs font-mono text-text-muted">
-                      {item.publishedAt}
+            {articles.map((item, i) => {
+              const minutes = estimateReadingMinutes(item.body);
+              return (
+                <Link
+                  key={item.slug}
+                  href={`/writing/${item.slug}`}
+                  className={`block group py-5 ${
+                    i > 0 ? "border-t border-border-light" : ""
+                  } hover:bg-bg/50 transition-colors -mx-2 px-2`}
+                >
+                  <div className="flex items-center gap-3 mb-1 flex-wrap">
+                    <span className="text-[10px] text-accent font-mono tracking-wider">
+                      {(item.tags[0] || "note").toUpperCase()}
                     </span>
+                    {item.publishedAt && (
+                      <span className="text-xs font-mono text-text-muted">
+                        {item.publishedAt}
+                      </span>
+                    )}
+                    <span className="text-[10px] font-mono text-text-muted">
+                      · {minutes} min
+                    </span>
+                  </div>
+                  <h2 className="font-mono text-sm font-bold group-hover:text-accent transition-colors">
+                    {item.title}
+                  </h2>
+                  {item.summary && (
+                    <p className="text-sm text-text-secondary mt-0.5">
+                      {item.summary}
+                    </p>
                   )}
-                  <span className="text-[10px] font-mono text-text-muted">
-                    · {item.readingMinutes} min
-                  </span>
-                </div>
-                <h2 className="font-mono text-sm font-bold group-hover:text-accent transition-colors">
-                  {item.title}
-                </h2>
-                {item.summary && (
-                  <p className="text-sm text-text-secondary mt-0.5">
-                    {item.summary}
-                  </p>
-                )}
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         ) : (
           <p className="text-text-secondary">Coming soon.</p>

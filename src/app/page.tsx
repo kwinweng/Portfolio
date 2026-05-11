@@ -88,6 +88,17 @@ function Sidebar() {
           ))}
         </nav>
       </div>
+
+      <div className="mt-auto pt-6">
+        <Link
+          href="/admin"
+          aria-label="Admin"
+          className="inline-flex items-center justify-center w-6 h-6 text-text-muted hover:text-accent transition-colors text-xs"
+          title="Admin"
+        >
+          🔒
+        </Link>
+      </div>
     </aside>
   );
 }
