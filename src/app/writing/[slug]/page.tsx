@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  listContent,
-  getContentMeta,
-  getAdjacentContent,
-} from "@/lib/content";
+  listWritings,
+  getWriting,
+  getAdjacentWritings,
+} from "@/lib/repo/writings";
+import { MDXBody } from "@/components/mdx-body";
+import { estimateReadingMinutes } from "@/lib/reading-time";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -14,32 +16,34 @@ type Props = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return listContent("writing").map((item) => ({ slug: item.slug }));
+  return listWritings("writing", { includeUnlisted: true }).map((item) => ({
+    slug: item.slug,
+  }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const meta = getContentMeta("writing", slug);
-  if (!meta) return { title: "Not Found" };
+  const item = getWriting("writing", slug, { includeUnlisted: true });
+  if (!item) return { title: "Not Found" };
   return {
-    title: meta.title,
-    description: meta.summary,
+    title: item.title,
+    description: item.summary,
     openGraph: {
-      title: meta.title,
-      description: meta.summary,
+      title: item.title,
+      description: item.summary,
       type: "article",
-      publishedTime: meta.publishedAt,
+      publishedTime: item.publishedAt,
     },
   };
 }
 
 export default async function WritingDetailPage({ params }: Props) {
   const { slug } = await params;
-  const meta = getContentMeta("writing", slug);
-  if (!meta) notFound();
+  const item = getWriting("writing", slug, { includeUnlisted: true });
+  if (!item) notFound();
 
-  const { prev, next } = getAdjacentContent("writing", slug);
-  const { default: Post } = await import(`@/../content/writing/${slug}.mdx`);
+  const { prev, next } = getAdjacentWritings("writing", slug);
+  const readingMinutes = estimateReadingMinutes(item.body);
 
   return (
     <article className="max-w-2xl mx-auto my-4 sm:my-8 panel-thick">
@@ -53,42 +57,39 @@ export default async function WritingDetailPage({ params }: Props) {
 
         <header className="mt-6 mb-8 pb-6 border-b border-border-light">
           <div className="flex items-center gap-3 mb-3 flex-wrap">
-            {meta.tags[0] && (
+            {item.tags[0] && (
               <span className="text-[10px] text-accent font-mono tracking-wider">
-                {meta.tags[0].toUpperCase()}
+                {item.tags[0].toUpperCase()}
               </span>
             )}
-            {meta.publishedAt && (
+            {item.publishedAt && (
               <span className="text-xs font-mono text-text-muted">
-                {meta.publishedAt}
+                {item.publishedAt}
               </span>
             )}
             <span className="text-xs font-mono text-text-muted">
-              · {meta.readingMinutes} min read
+              · {readingMinutes} min read
             </span>
           </div>
           <h1 className="mono-heading text-3xl sm:text-4xl font-mono font-bold text-border">
-            {meta.title}
+            {item.title}
           </h1>
-          {meta.summary && (
+          {item.summary && (
             <p className="text-text-secondary mt-3 leading-relaxed">
-              {meta.summary}
+              {item.summary}
             </p>
           )}
         </header>
 
         <div className="prose-content">
-          <Post />
+          <MDXBody source={item.body} />
         </div>
 
         {(prev || next) && (
           <nav className="mt-12 pt-6 border-t border-border-light grid grid-cols-2 gap-4">
             <div>
               {prev && (
-                <Link
-                  href={`/writing/${prev.slug}`}
-                  className="block group"
-                >
+                <Link href={`/writing/${prev.slug}`} className="block group">
                   <p className="text-[10px] font-mono text-text-muted tracking-wider mb-1">
                     ← PREV / 上一篇
                   </p>
@@ -100,10 +101,7 @@ export default async function WritingDetailPage({ params }: Props) {
             </div>
             <div className="text-right">
               {next && (
-                <Link
-                  href={`/writing/${next.slug}`}
-                  className="block group"
-                >
+                <Link href={`/writing/${next.slug}`} className="block group">
                   <p className="text-[10px] font-mono text-text-muted tracking-wider mb-1">
                     NEXT / 下一篇 →
                   </p>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { listContent } from "@/lib/content";
+import { listWritings } from "@/lib/repo/writings";
+import { estimateReadingMinutes } from "@/lib/reading-time";
 
 export const metadata: Metadata = {
   title: "Build Log / 开发日志",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function LogPage() {
-  const logs = listContent("log");
+  const logs = listWritings("log");
 
   return (
     <div className="max-w-3xl mx-auto my-4 sm:my-8 panel-thick">
@@ -26,40 +27,43 @@ export default function LogPage() {
 
         {logs.length > 0 ? (
           <div className="space-y-0">
-            {logs.map((item, i) => (
-              <Link
-                key={item.slug}
-                href={`/log/${item.slug}`}
-                className={`flex gap-4 py-4 group ${
-                  i > 0 ? "border-t border-border-light" : ""
-                } hover:bg-bg/50 transition-colors -mx-2 px-2`}
-              >
-                <div className="w-2 h-2 rounded-full bg-accent mt-1.5 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-1 flex-wrap">
-                    <span className="text-xs font-mono text-text-muted">
-                      {item.publishedAt}
-                    </span>
-                    {item.tags[0] && (
-                      <span className="text-[10px] text-accent font-mono tracking-wider">
-                        {item.tags[0].toUpperCase()}
+            {logs.map((item, i) => {
+              const minutes = estimateReadingMinutes(item.body);
+              return (
+                <Link
+                  key={item.slug}
+                  href={`/log/${item.slug}`}
+                  className={`flex gap-4 py-4 group ${
+                    i > 0 ? "border-t border-border-light" : ""
+                  } hover:bg-bg/50 transition-colors -mx-2 px-2`}
+                >
+                  <div className="w-2 h-2 rounded-full bg-accent mt-1.5 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1 flex-wrap">
+                      <span className="text-xs font-mono text-text-muted">
+                        {item.publishedAt}
                       </span>
-                    )}
-                    <span className="text-[10px] font-mono text-text-muted">
-                      · {item.readingMinutes} min
-                    </span>
-                  </div>
-                  <p className="font-mono text-sm font-bold group-hover:text-accent transition-colors">
-                    {item.title}
-                  </p>
-                  {item.summary && (
-                    <p className="text-sm text-text-secondary mt-0.5">
-                      {item.summary}
+                      {item.tags[0] && (
+                        <span className="text-[10px] text-accent font-mono tracking-wider">
+                          {item.tags[0].toUpperCase()}
+                        </span>
+                      )}
+                      <span className="text-[10px] font-mono text-text-muted">
+                        · {minutes} min
+                      </span>
+                    </div>
+                    <p className="font-mono text-sm font-bold group-hover:text-accent transition-colors">
+                      {item.title}
                     </p>
-                  )}
-                </div>
-              </Link>
-            ))}
+                    {item.summary && (
+                      <p className="text-sm text-text-secondary mt-0.5">
+                        {item.summary}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         ) : (
           <p className="text-text-secondary">No logs yet.</p>

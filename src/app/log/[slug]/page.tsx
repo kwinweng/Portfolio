@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  listContent,
-  getContentMeta,
-  getAdjacentContent,
-} from "@/lib/content";
+  listWritings,
+  getWriting,
+  getAdjacentWritings,
+} from "@/lib/repo/writings";
+import { MDXBody } from "@/components/mdx-body";
+import { estimateReadingMinutes } from "@/lib/reading-time";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -14,32 +16,34 @@ type Props = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return listContent("log").map((item) => ({ slug: item.slug }));
+  return listWritings("log", { includeUnlisted: true }).map((item) => ({
+    slug: item.slug,
+  }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const meta = getContentMeta("log", slug);
-  if (!meta) return { title: "Not Found" };
+  const item = getWriting("log", slug, { includeUnlisted: true });
+  if (!item) return { title: "Not Found" };
   return {
-    title: meta.title,
-    description: meta.summary,
+    title: item.title,
+    description: item.summary,
     openGraph: {
-      title: meta.title,
-      description: meta.summary,
+      title: item.title,
+      description: item.summary,
       type: "article",
-      publishedTime: meta.publishedAt,
+      publishedTime: item.publishedAt,
     },
   };
 }
 
 export default async function LogDetailPage({ params }: Props) {
   const { slug } = await params;
-  const meta = getContentMeta("log", slug);
-  if (!meta) notFound();
+  const item = getWriting("log", slug, { includeUnlisted: true });
+  if (!item) notFound();
 
-  const { prev, next } = getAdjacentContent("log", slug);
-  const { default: Post } = await import(`@/../content/log/${slug}.mdx`);
+  const { prev, next } = getAdjacentWritings("log", slug);
+  const readingMinutes = estimateReadingMinutes(item.body);
 
   return (
     <article className="max-w-2xl mx-auto my-4 sm:my-8 panel-thick">
@@ -54,32 +58,32 @@ export default async function LogDetailPage({ params }: Props) {
         <header className="mt-6 mb-8 pb-6 border-b border-border-light">
           <div className="flex items-center gap-3 mb-3 flex-wrap">
             <span className="w-2 h-2 rounded-full bg-accent" />
-            {meta.publishedAt && (
+            {item.publishedAt && (
               <span className="text-xs font-mono text-text-muted">
-                {meta.publishedAt}
+                {item.publishedAt}
               </span>
             )}
-            {meta.tags[0] && (
+            {item.tags[0] && (
               <span className="text-[10px] text-accent font-mono tracking-wider">
-                {meta.tags[0].toUpperCase()}
+                {item.tags[0].toUpperCase()}
               </span>
             )}
             <span className="text-xs font-mono text-text-muted">
-              · {meta.readingMinutes} min read
+              · {readingMinutes} min read
             </span>
           </div>
           <h1 className="mono-heading text-2xl sm:text-3xl font-mono font-bold text-border">
-            {meta.title}
+            {item.title}
           </h1>
-          {meta.summary && (
+          {item.summary && (
             <p className="text-text-secondary mt-3 leading-relaxed text-sm">
-              {meta.summary}
+              {item.summary}
             </p>
           )}
         </header>
 
         <div className="prose-content">
-          <Post />
+          <MDXBody source={item.body} />
         </div>
 
         {(prev || next) && (

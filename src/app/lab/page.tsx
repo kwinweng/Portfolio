@@ -1,23 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  labItems,
-  KIND_LABELS,
-  STATUS_LABELS,
-  type LabKind,
-} from "@/data/lab";
+import { listLab } from "@/lib/repo/lab";
 
 export const metadata: Metadata = {
   title: "Lab / 实验室",
   description: "Small tools, prototypes, templates and ongoing experiments.",
 };
 
-const KIND_ORDER: LabKind[] = ["tool", "experiment", "prototype", "template"];
+const KIND_LABELS: Record<string, string> = {
+  tool: "TOOL / 工具",
+  prototype: "PROTOTYPE / 原型",
+  experiment: "EXPERIMENT / 实验",
+  template: "TEMPLATE / 模板",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  active: "Active",
+  archived: "Archived",
+  tinkering: "Tinkering",
+};
+
+const KIND_ORDER = ["tool", "experiment", "prototype", "template"];
 
 export default function LabPage() {
+  const items = listLab();
   const groups = KIND_ORDER.map((kind) => ({
     kind,
-    items: labItems.filter((l) => l.kind === kind),
+    items: items.filter((l) => l.kind === kind),
   })).filter((g) => g.items.length > 0);
 
   return (
@@ -42,7 +51,7 @@ export default function LabPage() {
           {groups.map(({ kind, items }) => (
             <section key={kind}>
               <h2 className="text-[10px] font-mono text-accent tracking-wider mb-4">
-                {KIND_LABELS[kind]}
+                {KIND_LABELS[kind] ?? kind.toUpperCase()}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {items.map((item) => {
@@ -51,18 +60,16 @@ export default function LabPage() {
                       <div className="flex items-baseline justify-between gap-2 mb-1">
                         <p className="font-mono text-sm font-bold">
                           {item.title}
-                          {item.href && (
-                            <span className="text-accent ml-1">↗</span>
-                          )}
+                          {item.href && <span className="text-accent ml-1">↗</span>}
                         </p>
                         <span className="text-[10px] font-mono text-text-muted shrink-0">
-                          {STATUS_LABELS[item.status]}
+                          {STATUS_LABELS[item.status] ?? item.status}
                         </span>
                       </div>
                       <p className="text-xs text-text-secondary leading-relaxed">
                         {item.description}
                       </p>
-                      {item.stack && item.stack.length > 0 && (
+                      {item.stack.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-3">
                           {item.stack.map((s) => (
                             <span

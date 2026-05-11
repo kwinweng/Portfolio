@@ -1,18 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { readingItems, TOPIC_LABELS, type ReadingTopic } from "@/data/reading";
+import { listReading } from "@/lib/repo/reading";
 
 export const metadata: Metadata = {
   title: "Reading / 阅读",
   description: "Curated reading on AI, craft, design, and work.",
 };
 
-const TOPIC_ORDER: ReadingTopic[] = ["ai", "craft", "design", "work", "philosophy"];
+const TOPIC_LABELS: Record<string, string> = {
+  ai: "AI / 智能",
+  design: "DESIGN / 设计",
+  craft: "CRAFT / 手艺",
+  work: "WORK / 工作方式",
+  philosophy: "PHILOSOPHY / 哲学",
+};
+
+const TOPIC_ORDER = ["ai", "craft", "design", "work", "philosophy"];
 
 export default function ReadingPage() {
+  const items = listReading();
   const byTopic = TOPIC_ORDER.map((topic) => ({
     topic,
-    items: readingItems.filter((r) => r.topic === topic),
+    items: items.filter((r) => r.topic === topic),
   })).filter((g) => g.items.length > 0);
 
   return (
@@ -37,12 +46,12 @@ export default function ReadingPage() {
           {byTopic.map(({ topic, items }) => (
             <section key={topic}>
               <h2 className="text-[10px] font-mono text-accent tracking-wider mb-4">
-                {TOPIC_LABELS[topic]}
+                {TOPIC_LABELS[topic] ?? topic.toUpperCase()}
               </h2>
               <div className="space-y-0">
                 {items.map((item, i) => (
                   <article
-                    key={item.title}
+                    key={item.id}
                     className={`py-4 ${
                       i > 0 ? "border-t border-border-light" : ""
                     }`}
@@ -62,18 +71,22 @@ export default function ReadingPage() {
                           {item.title}
                         </span>
                       )}
-                      <span className="text-xs text-text-muted">
-                        {item.author}
-                      </span>
+                      {item.author && (
+                        <span className="text-xs text-text-muted">
+                          {item.author}
+                        </span>
+                      )}
                       {item.finishedAt && (
                         <span className="text-[10px] font-mono text-text-muted">
                           {item.finishedAt}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-text-secondary mt-1 leading-relaxed">
-                      {item.note}
-                    </p>
+                    {item.note && (
+                      <p className="text-sm text-text-secondary mt-1 leading-relaxed">
+                        {item.note}
+                      </p>
+                    )}
                   </article>
                 ))}
               </div>

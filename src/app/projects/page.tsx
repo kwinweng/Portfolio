@@ -1,30 +1,41 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getPublicProjects } from "@/lib/data";
-import { CATEGORY_GROUPS } from "@/types/project";
+import { listProjects } from "@/lib/repo/projects";
 
 export const metadata: Metadata = {
-  title: "Projects",
+  title: "Projects / 项目",
   description: "AI systems for investing, finance, knowledge, and intelligence.",
 };
 
+type Category = string;
+
+const CATEGORY_GROUPS: { label: string; categories: Category[] }[] = [
+  { label: "Investing / 投资", categories: ["investing"] },
+  { label: "Personal Finance / 个人财务", categories: ["finance"] },
+  {
+    label: "Knowledge & Intelligence / 知识与情报",
+    categories: ["knowledge", "intelligence"],
+  },
+  { label: "Agent & Creative / Agent 与创意", categories: ["agent"] },
+  { label: "Design & Planning / 设计与规划", categories: ["design", "planning"] },
+];
+
 export default function ProjectsPage() {
-  const projects = getPublicProjects();
+  const projects = listProjects();
 
   return (
     <div className="max-w-4xl mx-auto my-4 sm:my-8 panel-thick">
       <div className="p-6 sm:p-10">
-        <div className="flex items-center justify-between mb-8">
-          <Link
-            href="/"
-            className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
-          >
-            ← KWIN WENG
-          </Link>
-        </div>
-        <h1 className="mono-heading text-3xl sm:text-4xl font-mono mb-8">
+        <Link
+          href="/"
+          className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
+        >
+          ← KWIN WENG
+        </Link>
+        <h1 className="mono-heading text-3xl sm:text-4xl font-mono mt-6 mb-2 text-border">
           All Projects
         </h1>
+        <p className="text-text-secondary mb-8 font-mono text-sm">/ 所有项目</p>
 
         <div className="space-y-10">
           {CATEGORY_GROUPS.map((group) => {

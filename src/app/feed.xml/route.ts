@@ -1,4 +1,5 @@
-import { listAllContent } from "@/lib/content";
+import { listWritings } from "@/lib/repo/writings";
+import type { WritingRow, ContentType } from "@/lib/repo/types";
 
 const SITE_URL = "https://kwinweng.com";
 
@@ -24,16 +25,21 @@ function escapeXml(unsafe: string): string {
 export const dynamic = "force-static";
 
 export function GET() {
-  const items = listAllContent();
-  const updatedAt =
-    items[0]?.publishedAt ?? new Date().toISOString().slice(0, 10);
+  const writings = listWritings("writing");
+  const logs = listWritings("log");
+  const items: WritingRow[] = [...writings, ...logs].sort((a, b) => {
+    const aDate = a.publishedAt ?? a.updatedAt;
+    const bDate = b.publishedAt ?? b.updatedAt;
+    return bDate.localeCompare(aDate);
+  });
+
+  const updatedAt = items[0]?.publishedAt ?? new Date().toISOString();
 
   const itemsXml = items
     .map((item) => {
-      const url = `${SITE_URL}/${item.type}/${item.slug}`;
-      const pubDate = item.publishedAt
-        ? new Date(item.publishedAt).toUTCString()
-        : new Date().toUTCString();
+      const type: ContentType = item.type;
+      const url = `${SITE_URL}/${type}/${item.slug}`;
+      const pubDate = new Date(item.publishedAt ?? item.updatedAt).toUTCString();
       return `    <item>
       <title>${escapeXml(item.title)}</title>
       <link>${url}</link>
