@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPublicProjects } from "@/lib/data";
+import { listContent } from "@/lib/content";
 
 const SITE_URL = "https://kwinweng.com";
 
@@ -23,5 +24,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: p.featured ? 0.8 : 0.6,
   }));
 
-  return [...staticRoutes, ...projectRoutes];
+  const writingRoutes: MetadataRoute.Sitemap = listContent("writing").map((item) => ({
+    url: `${SITE_URL}/writing/${item.slug}`,
+    lastModified: item.updatedAt
+      ? new Date(item.updatedAt)
+      : item.publishedAt
+        ? new Date(item.publishedAt)
+        : now,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  const logRoutes: MetadataRoute.Sitemap = listContent("log").map((item) => ({
+    url: `${SITE_URL}/log/${item.slug}`,
+    lastModified: item.updatedAt
+      ? new Date(item.updatedAt)
+      : item.publishedAt
+        ? new Date(item.publishedAt)
+        : now,
+    changeFrequency: "monthly",
+    priority: 0.5,
+  }));
+
+  return [...staticRoutes, ...projectRoutes, ...writingRoutes, ...logRoutes];
 }

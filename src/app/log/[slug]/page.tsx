@@ -1,0 +1,116 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import {
+  listContent,
+  getContentMeta,
+  getAdjacentContent,
+} from "@/lib/content";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return listContent("log").map((item) => ({ slug: item.slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const meta = getContentMeta("log", slug);
+  if (!meta) return { title: "Not Found" };
+  return {
+    title: meta.title,
+    description: meta.summary,
+    openGraph: {
+      title: meta.title,
+      description: meta.summary,
+      type: "article",
+      publishedTime: meta.publishedAt,
+    },
+  };
+}
+
+export default async function LogDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const meta = getContentMeta("log", slug);
+  if (!meta) notFound();
+
+  const { prev, next } = getAdjacentContent("log", slug);
+  const { default: Post } = await import(`@/../content/log/${slug}.mdx`);
+
+  return (
+    <article className="max-w-2xl mx-auto my-4 sm:my-8 panel-thick">
+      <div className="p-6 sm:p-10">
+        <Link
+          href="/log"
+          className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
+        >
+          ← Build Log / 开发日志
+        </Link>
+
+        <header className="mt-6 mb-8 pb-6 border-b border-border-light">
+          <div className="flex items-center gap-3 mb-3 flex-wrap">
+            <span className="w-2 h-2 rounded-full bg-accent" />
+            {meta.publishedAt && (
+              <span className="text-xs font-mono text-text-muted">
+                {meta.publishedAt}
+              </span>
+            )}
+            {meta.tags[0] && (
+              <span className="text-[10px] text-accent font-mono tracking-wider">
+                {meta.tags[0].toUpperCase()}
+              </span>
+            )}
+            <span className="text-xs font-mono text-text-muted">
+              · {meta.readingMinutes} min read
+            </span>
+          </div>
+          <h1 className="mono-heading text-2xl sm:text-3xl font-mono font-bold text-border">
+            {meta.title}
+          </h1>
+          {meta.summary && (
+            <p className="text-text-secondary mt-3 leading-relaxed text-sm">
+              {meta.summary}
+            </p>
+          )}
+        </header>
+
+        <div className="prose-content">
+          <Post />
+        </div>
+
+        {(prev || next) && (
+          <nav className="mt-12 pt-6 border-t border-border-light grid grid-cols-2 gap-4">
+            <div>
+              {prev && (
+                <Link href={`/log/${prev.slug}`} className="block group">
+                  <p className="text-[10px] font-mono text-text-muted tracking-wider mb-1">
+                    ← PREV / 上一条
+                  </p>
+                  <p className="text-sm font-mono font-bold group-hover:text-accent transition-colors">
+                    {prev.title}
+                  </p>
+                </Link>
+              )}
+            </div>
+            <div className="text-right">
+              {next && (
+                <Link href={`/log/${next.slug}`} className="block group">
+                  <p className="text-[10px] font-mono text-text-muted tracking-wider mb-1">
+                    NEXT / 下一条 →
+                  </p>
+                  <p className="text-sm font-mono font-bold group-hover:text-accent transition-colors">
+                    {next.title}
+                  </p>
+                </Link>
+              )}
+            </div>
+          </nav>
+        )}
+      </div>
+    </article>
+  );
+}

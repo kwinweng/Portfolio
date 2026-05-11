@@ -20,9 +20,10 @@ export default function AboutPage() {
 
         <div className="flex flex-col sm:flex-row gap-8 mt-6 mb-8">
           <div className="flex-1">
-            <h1 className="mono-heading text-3xl sm:text-4xl font-mono mb-4">
+            <h1 className="mono-heading text-3xl sm:text-4xl font-mono mb-1 text-border">
               About
             </h1>
+            <p className="text-text-secondary mb-4 font-mono text-sm">/ 关于</p>
             <p className="text-text-secondary leading-relaxed">
               我是阿欢（Kwin Weng），一个投资人型 builder。我用 AI agent
               和数据系统，把投资、财务、知识和情报工作流产品化。

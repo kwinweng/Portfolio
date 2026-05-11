@@ -16,9 +16,10 @@ export default function AdminPage() {
         >
           ← KWIN WENG
         </Link>
-        <h1 className="mono-heading text-3xl font-mono mt-6 mb-4">
+        <h1 className="mono-heading text-3xl font-mono mt-6 mb-2 text-border">
           Admin
         </h1>
+        <p className="text-text-secondary mb-4 font-mono text-sm">/ 后台</p>
         <p className="text-text-secondary mb-6">Coming in v0.3.</p>
         <div className="space-y-2 text-sm text-text-muted">
           <p>• OAuth login</p>

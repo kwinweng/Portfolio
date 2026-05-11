@@ -1,0 +1,39 @@
+---
+title: Hello World
+summary: 第一篇文章 — 用来验证 MDX 管道、frontmatter 解析、代码高亮和阅读时间统计。
+publishedAt: 2026-05-11
+tags: [meta, mdx]
+projectSlug: kwinweng-com
+---
+
+这是 kwinweng.com 的第一篇文章。它的存在不是为了被读完，而是为了让我确认整个写作管道是通的：
+
+- `content/writing/*.mdx` 文件能被静态扫描
+- frontmatter 能正确解析
+- 代码块有 Shiki 高亮
+- 阅读时间能算对
+- 上下篇导航能跑
+
+## 写作约定
+
+我希望这里的文字是粗糙但真实的。比起精致但稀疏，我更想要密集且持续。
+
+> "Write drunk, edit sober." — Hemingway（其实他没说过，但意思对）
+
+## 代码示例
+
+下面是一个 TypeScript 片段，用来测试 Shiki 高亮：
+
+```ts
+type Visibility = "public" | "unlisted" | "private";
+
+function getPublicItems<T extends { visibility: Visibility }>(items: T[]) {
+  return items.filter((item) => item.visibility === "public");
+}
+```
+
+行内代码也要正确：调用 `getPublicItems(projects)` 应该返回过滤后的数组。
+
+## 接下来
+
+接下来的几周，我会陆续把过去半年的散落笔记搬过来，按主题重新组织。如果你看到这篇还没有"下一篇"，那说明我还在写。
