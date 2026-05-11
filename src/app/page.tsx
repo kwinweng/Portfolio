@@ -5,12 +5,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 const navItems = [
-  { id: "about", num: "00", label: "ABOUT" },
-  { id: "projects", num: "01", label: "PROJECTS" },
-  { id: "writing", num: "02", label: "WRITING" },
-  { id: "reading", num: "03", label: "READING" },
-  { id: "lab", num: "04", label: "LAB" },
-  { id: "elsewhere", num: "05", label: "ELSEWHERE" },
+  { id: "about", num: "00", label: "ABOUT", zh: "关于" },
+  { id: "projects", num: "01", label: "PROJECTS", zh: "项目" },
+  { id: "writing", num: "02", label: "WRITING", zh: "文章" },
+  { id: "reading", num: "03", label: "READING", zh: "阅读" },
+  { id: "lab", num: "04", label: "LAB", zh: "实验室" },
+  { id: "elsewhere", num: "05", label: "ELSEWHERE", zh: "其他" },
 ];
 
 const projects = [
@@ -80,6 +80,9 @@ function Sidebar() {
               </span>
               <span className="font-mono text-xs tracking-wider">
                 {item.label}
+              </span>
+              <span className="text-[10px] text-text-muted ml-auto">
+                {item.zh}
               </span>
             </a>
           ))}
@@ -222,6 +225,9 @@ export default function Home() {
                   <h2 className="font-mono text-lg font-bold">
                     <span className="text-xs text-text-muted mr-2">01</span>
                     Selected Projects
+                    <span className="text-xs text-text-muted font-normal ml-2">
+                      / 精选项目
+                    </span>
                   </h2>
                   <Link
                     href="/projects"
@@ -261,6 +267,9 @@ export default function Home() {
                 <h2 className="font-mono text-lg font-bold mb-4">
                   <span className="text-xs text-text-muted mr-2">NOW</span>
                   Status
+                  <span className="text-xs text-text-muted font-normal ml-2">
+                    / 状态
+                  </span>
                 </h2>
                 <p className="text-base leading-relaxed text-text-secondary">
                   正在把个人网站从&ldquo;展示页&rdquo;做成&ldquo;入口页&rdquo;：能看见我在做什么，也能进入更深的内容。
@@ -280,6 +289,9 @@ export default function Home() {
                 <h2 className="font-mono text-lg font-bold mb-5">
                   <span className="text-xs text-text-muted mr-2">02</span>
                   Writing
+                  <span className="text-xs text-text-muted font-normal ml-2">
+                    / 文章
+                  </span>
                 </h2>
                 <div className="space-y-4">
                   {writings.map((w) => (
@@ -301,6 +313,9 @@ export default function Home() {
                 <h2 className="font-mono text-lg font-bold mb-5">
                   <span className="text-xs text-text-muted mr-2">03</span>
                   Reading
+                  <span className="text-xs text-text-muted font-normal ml-2">
+                    / 阅读
+                  </span>
                 </h2>
                 <div className="space-y-4">
                   {readings.map((r) => (
@@ -319,6 +334,9 @@ export default function Home() {
                 <h2 className="font-mono text-lg font-bold mb-5">
                   <span className="text-xs text-text-muted mr-2">04</span>
                   Lab
+                  <span className="text-xs text-text-muted font-normal ml-2">
+                    / 实验室
+                  </span>
                 </h2>
                 <div className="space-y-3">
                   {labItems.map((l) => (
@@ -341,6 +359,9 @@ export default function Home() {
             <h2 className="font-mono text-lg font-bold mb-5">
               <span className="text-xs text-text-muted mr-2">05</span>
               Elsewhere
+              <span className="text-xs text-text-muted font-normal ml-2">
+                / 其他
+              </span>
             </h2>
             <div className="flex flex-wrap gap-6 items-center">
               <a
@@ -379,7 +400,7 @@ export default function Home() {
                 Kwin Weng / 阿欢
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {navItems.map((item) => (
                 <a
                   key={item.id}
@@ -387,7 +408,8 @@ export default function Home() {
                   className="flex items-center gap-2 py-2 text-xs font-mono text-text-secondary hover:text-accent transition-colors"
                 >
                   <span className="text-accent">{item.num}</span>
-                  {item.label}
+                  <span>{item.label}</span>
+                  <span className="text-[10px] text-text-muted">/ {item.zh}</span>
                 </a>
               ))}
             </div>

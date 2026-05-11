@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getPublicContent } from "@/lib/data";
+import { listContent } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Writing",
-  description: "Essays, notes, and build logs.",
+  title: "Writing / 文章",
+  description: "Essays, notes, and field reports.",
 };
 
 export default function WritingPage() {
-  const articles = getPublicContent("article");
+  const articles = listContent("writing");
 
   return (
     <div className="max-w-3xl mx-auto my-4 sm:my-8 panel-thick">
@@ -19,34 +19,43 @@ export default function WritingPage() {
         >
           ← KWIN WENG
         </Link>
-        <h1 className="mono-heading text-3xl sm:text-4xl font-mono mt-6 mb-8">
+        <h1 className="mono-heading text-3xl sm:text-4xl font-mono mt-6 mb-2 text-border">
           Writing
         </h1>
+        <p className="text-text-secondary mb-8 font-mono text-sm">/ 文章</p>
 
         {articles.length > 0 ? (
           <div className="space-y-0">
             {articles.map((item, i) => (
-              <article
+              <Link
                 key={item.slug}
-                className={`py-5 ${i > 0 ? "border-t border-border-light" : ""}`}
+                href={`/writing/${item.slug}`}
+                className={`block group py-5 ${
+                  i > 0 ? "border-t border-border-light" : ""
+                } hover:bg-bg/50 transition-colors -mx-2 px-2`}
               >
-                <div className="flex items-center gap-3 mb-1">
+                <div className="flex items-center gap-3 mb-1 flex-wrap">
                   <span className="text-[10px] text-accent font-mono tracking-wider">
-                    {item.tags[0] || "NOTE"}
+                    {(item.tags[0] || "note").toUpperCase()}
                   </span>
                   {item.publishedAt && (
-                    <span className="text-xs text-text-muted">
+                    <span className="text-xs font-mono text-text-muted">
                       {item.publishedAt}
                     </span>
                   )}
+                  <span className="text-[10px] font-mono text-text-muted">
+                    · {item.readingMinutes} min
+                  </span>
                 </div>
-                <h2 className="font-mono text-sm font-bold">
+                <h2 className="font-mono text-sm font-bold group-hover:text-accent transition-colors">
                   {item.title}
                 </h2>
-                <p className="text-sm text-text-secondary mt-0.5">
-                  {item.summary}
-                </p>
-              </article>
+                {item.summary && (
+                  <p className="text-sm text-text-secondary mt-0.5">
+                    {item.summary}
+                  </p>
+                )}
+              </Link>
             ))}
           </div>
         ) : (

@@ -34,7 +34,7 @@ export default async function ProjectPage({ params }: Props) {
           href="/projects"
           className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
         >
-          ← All Projects
+          ← All Projects / 所有项目
         </Link>
 
         <div className="mt-6 mb-8">

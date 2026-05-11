@@ -1,0 +1,30 @@
+---
+title: v0.2 — MDX 管道上线
+summary: Writing/Log 详情页接通，Shiki 代码高亮，RSS feed，双语目录。架构验证完成。
+publishedAt: 2026-05-11
+tags: [v0.2, infra]
+projectSlug: kwinweng-com
+---
+
+v0.2 的核心目标：把这个站点从"展示页"变成"可写入页"。
+
+## 这次做了什么
+
+- **MDX 管道**：`content/writing/` 和 `content/log/` 下的 `.mdx` 文件可被 Next.js 静态生成
+- **frontmatter**：用 `gray-matter` 解析 YAML 头部
+- **代码高亮**：`rehype-pretty-code` + Shiki，构建期渲染，0 JS 开销
+- **阅读时间**：按 250 词/分钟估算（中文按 2 字符/词折算）
+- **RSS feed**：`/feed.xml` 自动聚合 writing + log
+- **双语目录**：侧边栏、主标题、区块小标题三层加上中文译名
+
+## 为什么这么做
+
+写东西的摩擦越低，写得越多。之前每加一篇文章要改 `content.ts`，写正文要单独建组件 — 路径太长了。MDX 让我可以只关心内容本身。
+
+代码高亮选 Shiki 是因为它在构建期渲染，跟我的 SSG 路线一致 — 不给浏览器多塞一个高亮库。
+
+## 待办
+
+- [ ] 把真实文章迁过来（之前 5 条 stub 删了，从零开始攒）
+- [ ] Reading / Lab 页面替换为真实内容
+- [ ] v0.3 admin 后台（先不动）
