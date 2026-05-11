@@ -1,65 +1,73 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "About Kwin Weng — Investor & Product Builder.",
+  description: "About Kwin Weng / 阿欢.",
 };
 
 export default function AboutPage() {
   return (
-    <div className="pt-32 pb-32 sm:pb-24">
-      <div className="max-w-3xl mx-auto px-6">
-        <div className="mb-16">
-          <h1 className="text-4xl font-semibold text-canvas-white font-[family-name:var(--font-geist-sans)] tracking-tight">
-            About
-          </h1>
+    <div className="max-w-3xl mx-auto my-4 sm:my-8 panel-thick">
+      <div className="p-6 sm:p-10">
+        <Link
+          href="/"
+          className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
+        >
+          ← KWIN WENG
+        </Link>
+
+        <div className="flex flex-col sm:flex-row gap-8 mt-6 mb-8">
+          <div className="flex-1">
+            <h1 className="mono-heading text-3xl sm:text-4xl font-mono mb-4">
+              About
+            </h1>
+            <p className="text-text-secondary leading-relaxed">
+              我是阿欢（Kwin Weng），一个投资人型 builder。我用 AI agent
+              和数据系统，把投资、财务、知识和情报工作流产品化。
+            </p>
+            <p className="text-text-secondary leading-relaxed mt-4">
+              这个网站是我的个人工作台。我把项目、文章、阅读和小实验放在这里，帮助我把分散的想法变成可以回看、可以复用、可以继续推进的系统。
+            </p>
+          </div>
+          <div className="sm:w-40 shrink-0">
+            <Image
+              src="/kwin-pixel-avatar.png"
+              alt="Kwin Weng"
+              width={160}
+              height={160}
+              className="pixel-art border-3 border-border"
+            />
+          </div>
         </div>
 
-        <div className="space-y-8 text-silver-whisper leading-relaxed">
-          <p className="text-lg">
-            I&apos;m Kwin Weng — an investor-type builder using AI agents and data
-            systems to productize my investing, finance, knowledge, and
-            intelligence workflows.
+        <div className="panel p-6">
+          <p className="text-[10px] font-mono text-text-muted tracking-wider uppercase mb-4">
+            Contact
           </p>
-
-          <p>
-            I don&apos;t just use AI tools — I build them. From quantitative factor
-            research (Warp) to personal financial dashboards (Financial Expert
-            v2), from knowledge management systems (LLM Knowledge Base) to
-            intelligence radars (News Radar), each project solves a real problem
-            in my daily workflow.
-          </p>
-
-          <p>
-            My approach: start with a real need, build a working system, iterate
-            in public, and share what I learn along the way.
-          </p>
-
-          <div className="card-ghost p-8 mt-12">
-            <h2 className="text-xl font-semibold text-ghost-white font-[family-name:var(--font-geist-sans)] mb-6">
-              Get in Touch
-            </h2>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-3">
-                <span className="text-slate-text w-16">GitHub</span>
-                <a
-                  href="https://github.com/kwinweng"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ghost-white hover:text-canvas-white transition-colors"
-                >
-                  github.com/kwinweng
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-slate-text w-16">Email</span>
-                <a
-                  href="mailto:hello@kwinweng.com"
-                  className="text-ghost-white hover:text-canvas-white transition-colors"
-                >
-                  hello@kwinweng.com
-                </a>
-              </div>
+          <div className="space-y-2 text-sm">
+            <div className="flex gap-4">
+              <span className="text-text-muted w-14 font-mono text-xs">
+                GitHub
+              </span>
+              <a
+                href="https://github.com/kwinweng"
+                className="hover:text-accent transition-colors"
+              >
+                github.com/kwinweng
+              </a>
+            </div>
+            <div className="flex gap-4">
+              <span className="text-text-muted w-14 font-mono text-xs">
+                Email
+              </span>
+              <a
+                href="mailto:hello@kwinweng.com"
+                className="hover:text-accent transition-colors"
+              >
+                hello@kwinweng.com
+              </a>
             </div>
           </div>
         </div>

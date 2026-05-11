@@ -4,7 +4,7 @@ export function Footer() {
       <div className="max-w-5xl mx-auto px-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
           <div>
-            <p className="text-ghost-white font-medium font-[family-name:var(--font-geist-sans)]">
+            <p className="text-ghost-white font-medium font-mono">
               Kwin Weng
             </p>
             <p className="text-slate-text text-sm mt-1">

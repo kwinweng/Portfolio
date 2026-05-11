@@ -1,27 +1,19 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import "./globals.css";
-
-const geist = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: {
-    default: "Kwin Weng — Investor & Product Builder",
-    template: "%s | Kwin Weng",
+    default: "KWIN WENG / 阿欢",
+    template: "%s | KWIN WENG",
   },
   description:
-    "Building AI systems for investing, finance, knowledge, and intelligence workflows.",
+    "Personal site, digital garden, and lab. AI workflows, product thinking, knowledge systems.",
   openGraph: {
-    title: "Kwin Weng — Investor & Product Builder",
+    title: "KWIN WENG / 阿欢",
     description:
-      "Building AI systems for investing, finance, knowledge, and intelligence workflows.",
+      "Personal site, digital garden, and lab. AI workflows, product thinking, knowledge systems.",
     url: "https://kwinweng.com",
-    siteName: "Kwin Weng",
+    siteName: "KWIN WENG",
     type: "website",
   },
 };
@@ -32,12 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geist.variable}>
-      <body className="min-h-screen flex flex-col antialiased">
-        <Navigation />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </body>
+    <html lang="zh-CN">
+      <body className="bg-grid min-h-screen">{children}</body>
     </html>
   );
 }

@@ -15,7 +15,7 @@ export function Section({
     <section className={`py-20 ${className}`}>
       <div className="max-w-5xl mx-auto px-6">
         <div className="mb-12">
-          <h2 className="text-3xl font-semibold text-ghost-white font-[family-name:var(--font-geist-sans)] tracking-tight">
+          <h2 className="text-3xl font-semibold text-ghost-white font-mono tracking-tight">
             {title}
           </h2>
           {subtitle && (

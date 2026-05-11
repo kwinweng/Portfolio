@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/data";
-import { StatusBadge } from "@/components/status-badge";
-import { CATEGORY_LABELS } from "@/types/project";
+import { STATUS_LABELS, CATEGORY_LABELS } from "@/types/project";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -20,10 +19,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: project.title,
     description: project.description,
-    openGraph: {
-      title: `${project.title} — ${project.subtitle}`,
-      description: project.description,
-    },
   };
 }
 
@@ -33,44 +28,44 @@ export default async function ProjectPage({ params }: Props) {
   if (!project) notFound();
 
   return (
-    <div className="pt-32 pb-32 sm:pb-24">
-      <div className="max-w-3xl mx-auto px-6">
-        {/* Back */}
+    <div className="max-w-3xl mx-auto my-4 sm:my-8 panel-thick">
+      <div className="p-6 sm:p-10">
         <Link
           href="/projects"
-          className="inline-flex items-center text-sm text-ash-text hover:text-canvas-white transition-colors mb-10"
+          className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
         >
-          &larr; All Projects
+          ← All Projects
         </Link>
 
-        {/* Header */}
-        <div className="mb-12">
+        <div className="mt-6 mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-canvas-white/10 text-ash-text">
+            <span className="text-xs font-mono text-accent">
               {project.priority}
             </span>
-            <StatusBadge status={project.status} />
+            <span className="text-xs font-mono text-text-muted">
+              {STATUS_LABELS[project.status]}
+            </span>
           </div>
-          <h1 className="text-4xl font-semibold text-canvas-white font-[family-name:var(--font-geist-sans)] tracking-tight mt-3">
+          <h1 className="mono-heading text-3xl sm:text-4xl font-mono">
             {project.title}
           </h1>
-          <p className="text-xl text-ash-text mt-2">{project.subtitle}</p>
-          <p className="text-silver-whisper leading-relaxed mt-6">
-            {project.description}
-          </p>
+          <p className="text-text-secondary mt-2">{project.subtitle}</p>
         </div>
 
-        {/* Links */}
+        <p className="text-text-secondary leading-relaxed mb-8">
+          {project.description}
+        </p>
+
         {(project.links.demo || project.links.github) && (
-          <div className="flex gap-3 mb-12">
+          <div className="flex gap-4 mb-8">
             {project.links.demo && (
               <a
                 href={project.links.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-5 py-2.5 rounded-full bg-canvas-white text-midnight-base text-sm font-medium hover:bg-ghost-white transition-colors"
+                className="text-xs font-mono text-accent hover:underline"
               >
-                Live Demo
+                Live Demo →
               </a>
             )}
             {project.links.github && (
@@ -78,97 +73,74 @@ export default async function ProjectPage({ params }: Props) {
                 href={project.links.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-5 py-2.5 rounded-full border border-ghost-white text-ghost-white text-sm font-medium hover:bg-canvas-white/5 transition-colors"
+                className="text-xs font-mono text-text-secondary hover:text-accent transition-colors"
               >
-                GitHub
+                GitHub →
               </a>
             )}
           </div>
         )}
 
-        {/* Details Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
-          {/* Categories */}
-          <div className="card-ghost p-5">
-            <h3 className="text-xs font-medium text-slate-text uppercase tracking-wider mb-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          <div className="panel p-4">
+            <p className="text-[10px] font-mono text-text-muted tracking-wider uppercase mb-2">
               Categories
-            </h3>
+            </p>
             <div className="flex flex-wrap gap-2">
               {project.categories.map((cat) => (
-                <span
-                  key={cat}
-                  className="text-sm text-ghost-white"
-                >
+                <span key={cat} className="text-sm">
                   {CATEGORY_LABELS[cat]}
                 </span>
               ))}
             </div>
           </div>
-
-          {/* Stack */}
-          <div className="card-ghost p-5">
-            <h3 className="text-xs font-medium text-slate-text uppercase tracking-wider mb-3">
-              Tech Stack
-            </h3>
+          <div className="panel p-4">
+            <p className="text-[10px] font-mono text-text-muted tracking-wider uppercase mb-2">
+              Stack
+            </p>
             <div className="flex flex-wrap gap-2">
               {project.stack.map((tech) => (
                 <span
                   key={tech}
-                  className="text-xs px-2.5 py-1 rounded-full border border-gunmetal text-ash-text"
+                  className="text-xs font-mono px-2 py-0.5 border border-border-light"
                 >
                   {tech}
                 </span>
               ))}
             </div>
           </div>
-
-          {/* Metrics */}
-          {project.metrics && project.metrics.length > 0 && (
-            <div className="card-ghost p-5">
-              <h3 className="text-xs font-medium text-slate-text uppercase tracking-wider mb-3">
-                Key Metrics
-              </h3>
-              <div className="space-y-2">
-                {project.metrics.map((m) => (
-                  <div key={m.label} className="flex justify-between">
-                    <span className="text-sm text-ash-text">{m.label}</span>
-                    <span className="text-sm font-medium text-ghost-white">
-                      {m.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Updated */}
-          <div className="card-ghost p-5">
-            <h3 className="text-xs font-medium text-slate-text uppercase tracking-wider mb-3">
-              Last Updated
-            </h3>
-            <p className="text-sm text-ghost-white">{project.updatedAt}</p>
-          </div>
         </div>
 
-        {/* Roadmap */}
+        {project.metrics && project.metrics.length > 0 && (
+          <div className="panel p-4 mb-8">
+            <p className="text-[10px] font-mono text-text-muted tracking-wider uppercase mb-3">
+              Metrics
+            </p>
+            {project.metrics.map((m) => (
+              <div key={m.label} className="flex justify-between py-1">
+                <span className="text-sm text-text-secondary">{m.label}</span>
+                <span className="text-sm font-mono font-bold">
+                  {m.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {project.roadmap && project.roadmap.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-xl font-semibold text-ghost-white font-[family-name:var(--font-geist-sans)] mb-6">
+          <div>
+            <p className="text-[10px] font-mono text-text-muted tracking-wider uppercase mb-3">
               Roadmap
-            </h2>
-            <div className="space-y-3">
+            </p>
+            <div className="space-y-2">
               {project.roadmap.map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <div
-                    className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
-                      i === 0 ? "bg-interactive-glow" : "bg-gunmetal"
+                  <span
+                    className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                      i === 0 ? "bg-accent" : "bg-border-light"
                     }`}
                   />
-                  <p
-                    className={`text-sm ${
-                      i === 0 ? "text-ghost-white" : "text-ash-text"
-                    }`}
-                  >
+                  <p className={`text-sm ${i === 0 ? "text-text" : "text-text-secondary"}`}>
                     {item}
                   </p>
                 </div>

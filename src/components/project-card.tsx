@@ -8,7 +8,7 @@ export function ProjectCard({ project }: { project: Project }) {
       <div className="card-ghost p-6 h-full transition-all duration-300 hover:bg-[rgba(212,212,212,0.15)] border border-transparent hover:border-gunmetal">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <h3 className="text-lg font-semibold text-canvas-white font-[family-name:var(--font-geist-sans)] group-hover:text-canvas-white transition-colors">
+            <h3 className="text-lg font-semibold text-canvas-white font-mono group-hover:text-canvas-white transition-colors">
               {project.title}
             </h3>
             <p className="text-sm text-ash-text">{project.subtitle}</p>

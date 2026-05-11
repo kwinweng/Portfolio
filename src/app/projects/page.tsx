@@ -1,30 +1,32 @@
 import type { Metadata } from "next";
-import { ProjectCard } from "@/components/project-card";
+import Link from "next/link";
 import { getPublicProjects } from "@/lib/data";
 import { CATEGORY_GROUPS } from "@/types/project";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "AI systems for investing, finance, knowledge, and intelligence workflows.",
+  description: "AI systems for investing, finance, knowledge, and intelligence.",
 };
 
 export default function ProjectsPage() {
   const projects = getPublicProjects();
 
   return (
-    <div className="pt-32 pb-32 sm:pb-24">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="mb-16">
-          <h1 className="text-4xl font-semibold text-canvas-white font-[family-name:var(--font-geist-sans)] tracking-tight">
-            Projects
-          </h1>
-          <p className="text-ash-text mt-3 text-lg max-w-2xl">
-            Building AI-powered systems across investing, personal finance,
-            knowledge management, and intelligence workflows.
-          </p>
+    <div className="max-w-4xl mx-auto my-4 sm:my-8 panel-thick">
+      <div className="p-6 sm:p-10">
+        <div className="flex items-center justify-between mb-8">
+          <Link
+            href="/"
+            className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
+          >
+            ← KWIN WENG
+          </Link>
         </div>
+        <h1 className="mono-heading text-3xl sm:text-4xl font-mono mb-8">
+          All Projects
+        </h1>
 
-        <div className="space-y-12">
+        <div className="space-y-10">
           {CATEGORY_GROUPS.map((group) => {
             const groupProjects = projects.filter((p) =>
               p.categories.some((c) => group.categories.includes(c))
@@ -32,12 +34,34 @@ export default function ProjectsPage() {
             if (groupProjects.length === 0) return null;
             return (
               <div key={group.label}>
-                <h2 className="text-sm font-medium text-slate-text uppercase tracking-wider mb-6">
+                <h2 className="text-xs font-mono text-text-muted tracking-wider uppercase mb-4">
                   {group.label}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {groupProjects.map((project) => (
-                    <ProjectCard key={project.slug} project={project} />
+                <div className="space-y-0">
+                  {groupProjects.map((project, i) => (
+                    <Link
+                      key={project.slug}
+                      href={`/projects/${project.slug}`}
+                      className="group block"
+                    >
+                      <div
+                        className={`flex items-start justify-between py-4 hover:bg-bg/50 -mx-2 px-2 transition-colors ${
+                          i > 0 ? "border-t border-border-light" : ""
+                        }`}
+                      >
+                        <div>
+                          <p className="font-mono text-sm font-bold group-hover:text-accent transition-colors">
+                            {project.title}
+                          </p>
+                          <p className="text-sm text-text-secondary mt-0.5">
+                            {project.subtitle}
+                          </p>
+                        </div>
+                        <span className="text-xs text-accent font-mono shrink-0">
+                          {project.status === "deployed" ? "Live" : project.status}
+                        </span>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               </div>

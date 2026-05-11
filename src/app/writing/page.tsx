@@ -1,61 +1,56 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getPublicContent } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Writing",
-  description: "Articles on AI, product building, and investment workflows.",
+  description: "Essays, notes, and build logs.",
 };
 
 export default function WritingPage() {
   const articles = getPublicContent("article");
 
   return (
-    <div className="pt-32 pb-32 sm:pb-24">
-      <div className="max-w-3xl mx-auto px-6">
-        <div className="mb-16">
-          <h1 className="text-4xl font-semibold text-canvas-white font-[family-name:var(--font-geist-sans)] tracking-tight">
-            Writing
-          </h1>
-          <p className="text-ash-text mt-3 text-lg">
-            Articles on AI systems, product building, and investment workflows.
-          </p>
-        </div>
+    <div className="max-w-3xl mx-auto my-4 sm:my-8 panel-thick">
+      <div className="p-6 sm:p-10">
+        <Link
+          href="/"
+          className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
+        >
+          ← KWIN WENG
+        </Link>
+        <h1 className="mono-heading text-3xl sm:text-4xl font-mono mt-6 mb-8">
+          Writing
+        </h1>
 
         {articles.length > 0 ? (
-          <div className="space-y-6">
-            {articles.map((item) => (
+          <div className="space-y-0">
+            {articles.map((item, i) => (
               <article
                 key={item.slug}
-                className="py-6 border-b border-gunmetal last:border-0"
+                className={`py-5 ${i > 0 ? "border-t border-border-light" : ""}`}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-xs text-slate-text">
-                    {item.publishedAt}
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="text-[10px] text-accent font-mono tracking-wider">
+                    {item.tags[0] || "NOTE"}
                   </span>
-                  {item.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs px-2 py-0.5 rounded-full border border-gunmetal text-slate-text"
-                    >
-                      {tag}
+                  {item.publishedAt && (
+                    <span className="text-xs text-text-muted">
+                      {item.publishedAt}
                     </span>
-                  ))}
+                  )}
                 </div>
-                <h2 className="text-lg font-medium text-ghost-white">
+                <h2 className="font-mono text-sm font-bold">
                   {item.title}
                 </h2>
-                <p className="text-sm text-ash-text mt-2">{item.summary}</p>
+                <p className="text-sm text-text-secondary mt-0.5">
+                  {item.summary}
+                </p>
               </article>
             ))}
           </div>
         ) : (
-          <div className="card-ghost p-12 text-center">
-            <p className="text-ash-text">Coming soon.</p>
-            <p className="text-sm text-slate-text mt-2">
-              Articles on AI agent development, relay workflows, and building
-              personal AI systems.
-            </p>
-          </div>
+          <p className="text-text-secondary">Coming soon.</p>
         )}
       </div>
     </div>
