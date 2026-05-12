@@ -106,53 +106,53 @@ export default function Home() {
 
         <main className="flex-1 min-w-0">
           {/* Hero / About */}
-          <section id="about" className="p-6 sm:p-10">
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+          <section id="about" className="p-5 sm:p-7">
+            <div className="flex flex-col lg:flex-row gap-5 lg:gap-8">
               <div className="flex-1">
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-4">
                   <p className="text-xs text-text-secondary font-mono tracking-wider">
                     <span className="inline-block w-2 h-2 bg-accent mr-2 align-middle" />
                     PERSONAL SITE / DIGITAL GARDEN / LAB
+                    <span className="text-text-muted ml-2">/ 个人主页 · 数字花园 · 实验室</span>
                   </p>
                   <span className="text-accent text-sm font-mono">2026</span>
                 </div>
 
-                <h1 className="mono-heading text-5xl sm:text-7xl lg:text-8xl leading-[0.92] text-border font-mono">
+                <h1 className="mono-heading text-3xl sm:text-4xl lg:text-5xl leading-[0.95] text-border font-mono">
                   KWIN
                   <br />
                   WENG
                 </h1>
-                <p className="mono-heading text-2xl sm:text-4xl text-border mt-2 font-mono">
+                <p className="mono-heading text-base sm:text-xl text-border mt-1 font-mono">
                   / 阿欢
                 </p>
 
-                <p className="mt-8 text-base text-text-secondary leading-relaxed max-w-lg">
+                <p className="mt-4 text-sm text-text-secondary leading-relaxed max-w-lg">
                   我把项目、文章、阅读和小实验放在这里。它像一个开放的工作台，帮助我把分散的想法变成可以回看、可以复用、可以继续推进的系统。
                 </p>
               </div>
 
-              <div className="lg:w-72 shrink-0">
+              <div className="lg:w-52 shrink-0">
                 <div className="panel-thick p-0 overflow-hidden">
-                  <div className="bg-panel p-4">
+                  <div className="bg-panel p-3">
                     <Image
                       src="/kwin-pixel-avatar.png"
                       alt="Kwin Weng pixel avatar"
-                      width={240}
-                      height={240}
-                      className="pixel-art w-full max-h-[220px] lg:max-h-none aspect-square object-cover"
+                      width={180}
+                      height={180}
+                      className="pixel-art w-full max-h-[140px] lg:max-h-none aspect-square object-cover"
                       priority
                     />
                   </div>
-                  <div className="p-4 border-t-3 border-border">
-                    <span className="inline-block px-2 py-0.5 bg-accent text-white text-[10px] font-bold font-mono tracking-wider mb-3">
-                      ONLINE
+                  <div className="p-3 border-t-3 border-border">
+                    <span className="inline-block px-2 py-0.5 bg-accent text-white text-[10px] font-bold font-mono tracking-wider mb-2">
+                      ONLINE / 在线
                     </span>
-                    <p className="text-sm font-mono leading-snug">
-                      AI workflows,
-                      <br />
-                      product thinking,
-                      <br />
-                      knowledge systems.
+                    <p className="text-xs font-mono leading-snug">
+                      AI workflows · product thinking · knowledge systems
+                    </p>
+                    <p className="text-[11px] font-mono text-text-muted leading-snug mt-1">
+                      AI 工作流 · 产品思考 · 知识系统
                     </p>
                   </div>
                 </div>
