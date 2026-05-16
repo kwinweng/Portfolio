@@ -43,3 +43,7 @@ next-env.d.ts
 
 # SQLite local data
 /.data/
+
+# tooling sidecars
+/.claude/
+/.gstack-design-audit/

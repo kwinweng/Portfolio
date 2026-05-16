@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { getAllSettings } from "@/lib/repo/settings";
 
 export const metadata: Metadata = {
   title: "About",
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const settings = getAllSettings();
   return (
     <div className="max-w-3xl mx-auto my-4 sm:my-8 panel-thick">
       <div className="p-6 sm:p-10">
@@ -15,7 +17,7 @@ export default function AboutPage() {
           href="/"
           className="text-xs font-mono text-text-muted hover:text-accent transition-colors"
         >
-          ← KWIN WENG
+          ← {settings.siteName}
         </Link>
 
         <div className="flex flex-col sm:flex-row gap-8 mt-6 mb-8">
@@ -24,18 +26,17 @@ export default function AboutPage() {
               About
             </h1>
             <p className="text-text-secondary mb-4 font-mono text-sm">/ 关于</p>
-            <p className="text-text-secondary leading-relaxed">
-              我是阿欢（Kwin Weng），一个投资人型 builder。我用 AI agent
-              和数据系统，把投资、财务、知识和情报工作流产品化。
+            <p className="text-text-secondary leading-relaxed whitespace-pre-line">
+              {settings.aboutIntro}
             </p>
-            <p className="text-text-secondary leading-relaxed mt-4">
-              这个网站是我的个人工作台。我把项目、文章、阅读和小实验放在这里，帮助我把分散的想法变成可以回看、可以复用、可以继续推进的系统。
+            <p className="text-text-secondary leading-relaxed mt-4 whitespace-pre-line">
+              {settings.aboutBody}
             </p>
           </div>
           <div className="sm:w-40 shrink-0">
             <Image
               src="/kwin-pixel-avatar.png"
-              alt="Kwin Weng"
+              alt={settings.siteName}
               width={160}
               height={160}
               className="pixel-art border-3 border-border"

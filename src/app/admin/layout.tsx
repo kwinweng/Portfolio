@@ -64,6 +64,12 @@ export default async function AdminLayout({
               >
                 Lab
               </Link>
+              <Link
+                href="/admin/settings"
+                className="text-text-secondary hover:text-accent transition-colors"
+              >
+                Settings
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-3">

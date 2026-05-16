@@ -19,7 +19,7 @@ export function EmailButton() {
         }
         setTimeout(() => setCopied(false), 1500);
       }}
-      className={`text-xs font-mono transition-colors cursor-pointer inline-block ${
+      className={`text-sm font-mono transition-colors cursor-pointer inline-flex items-center min-h-11 -my-2.5 ${
         copied ? "text-accent font-bold" : "text-text-secondary hover:text-accent"
       }`}
     >

@@ -74,6 +74,12 @@ CREATE TABLE IF NOT EXISTS lab_items (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL DEFAULT '',
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX IF NOT EXISTS idx_writings_type ON writings(type);
 CREATE INDEX IF NOT EXISTS idx_writings_published ON writings(status, published_at);
 `;

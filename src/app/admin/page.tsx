@@ -132,6 +132,12 @@ export default function AdminDashboard() {
           >
             + New lab item
           </Link>
+          <Link
+            href="/admin/settings"
+            className="px-3 py-2 border-3 border-border font-mono text-xs hover:bg-accent hover:border-accent hover:text-bg transition-colors"
+          >
+            ⚙ Site settings
+          </Link>
         </div>
       </section>
     </div>
