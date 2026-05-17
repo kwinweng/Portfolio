@@ -176,7 +176,7 @@ export default function Home() {
                   </p>
                 )}
 
-                <p className="mt-4 text-sm text-text-secondary leading-relaxed max-w-lg">
+                <p className="mt-4 text-sm text-text-secondary leading-relaxed max-w-lg whitespace-pre-line">
                   {settings.heroTagline}
                 </p>
 
