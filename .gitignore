@@ -47,3 +47,7 @@ next-env.d.ts
 # tooling sidecars
 /.claude/
 /.gstack-design-audit/
+
+# Local handoff doc with production secrets, never commit
+HANDOFF.md
+HANDOFF.local.md
